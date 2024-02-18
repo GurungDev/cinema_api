@@ -1,8 +1,9 @@
 import { plainToClassFromExist } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { RequestDataPaths } from "../contants/enums";
+ 
 import { ExpressError } from "./error";
+import { RequestDataPaths } from "../enum";
 
 export class Validator {
   private static getDataPoint(req: Request, path: RequestDataPaths) {
@@ -15,9 +16,6 @@ export class Validator {
 
       case RequestDataPaths.Query:
         return req.query;
-
-      // case RequestDataPaths.Files:
-      //   return req.files;
 
       default:
         break;

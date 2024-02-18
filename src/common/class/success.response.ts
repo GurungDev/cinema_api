@@ -13,8 +13,5 @@ export class ResponseHandler {
       data,
     });
   }
-
-  static fail<T>() {
-    // TODO: not to be implemented
-  }
+ 
 }

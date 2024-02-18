@@ -3,8 +3,7 @@
 import cors from "cors";
 import MainRouter from "./mainRouter";
 
-
-const pokharaRental = () => {
+const cinema = () => {
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
@@ -14,4 +13,4 @@ const pokharaRental = () => {
     return app;
   };
   
-  export default pokharaRental;
+  export default cinema;

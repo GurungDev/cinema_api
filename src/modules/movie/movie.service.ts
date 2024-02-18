@@ -1,4 +1,6 @@
+import { DeepPartial } from "typeorm";
 import { MovieRepo, movieRepo } from "./repository/movie.repository";
+import MovieEntity from "./entities/movie.entity";
 
  
 export default class MovieService{
@@ -23,6 +25,18 @@ export default class MovieService{
     async getMovieAccordingToId(id:number){
         return await this.repository.findOneBy({ id: id });
     }    
+
+    async createOne(movie: DeepPartial<MovieEntity>) {
+        return this.repository.create(movie);
+    }
+
+    async delete(movieId: number) {
+        return this.repository.delete({ id: movieId });
+    }
+
+    async update(movieId: number, movie: DeepPartial<MovieEntity>) {
+        return this.repository.update({ id: movieId },movie);
+    }
 }
 
 export const movieService = new MovieService();

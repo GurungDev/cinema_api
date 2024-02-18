@@ -10,7 +10,6 @@ import CinemaEntity from "../../user/cinema/entities/cinema.entity";
 
 @Entity({name: 'show'})
 export default class ShowEntity extends CustomBaseEntity {
-    
     @Column()
     date: Date;
 

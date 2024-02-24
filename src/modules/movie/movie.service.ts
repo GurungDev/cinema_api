@@ -27,11 +27,11 @@ export default class MovieService{
     }    
 
     async createOne(movie: DeepPartial<MovieEntity>) {
-        return this.repository.create(movie);
+        return this.repository.create(movie).save();
     }
 
-    async delete(movieId: number) {
-        return this.repository.delete({ id: movieId });
+    async delete(movieId: number, cinemaId: number) {
+        return this.repository.softDelete({ id: movieId , cinema: {id: cinemaId}});
     }
 
     async update(movieId: number, movie: DeepPartial<MovieEntity>) {

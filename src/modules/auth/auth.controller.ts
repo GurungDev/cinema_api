@@ -1,16 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import { AuthService } from "./auth.service";
 import { plainToInstance } from "class-transformer";
+import { NextFunction, Request, Response } from "express";
+import { OtpPurpose } from "../../common/enum";
+import { OTPService, otpService } from "../otp/otp.service";
 import {
   ChangePasswordDto,
+  CinemaRegisterDto,
   CustomerRegisterDto,
   OtpDto,
-  StoreRegisterDto,
 } from "./auth.dto";
-import { ResponseHandler } from "../../common/class/success.response";
-import { OTPService, otpService } from "../otp/otp.service";
-import emailService, { EmailService } from "../email/emai.service";
-import { OtpPurpose } from "../../common/enum";
+import { AuthService } from "./auth.service";
 
 export default class AuthController {
   private readonly service: AuthService;
@@ -30,11 +28,16 @@ export default class AuthController {
         validateFor
       );
       const token = await this.service.createToken(id, validateFor);
-      return ResponseHandler.success(res, "Login Success", {
-        id,
-        name,
-        token,
+      return res.status(200).json({
+        success: true,
+        message: "Login Success",
+        data: {
+          id,
+          name,
+          token,
+        },
       });
+  
     } catch (error) {
       next(error);
     }
@@ -42,37 +45,41 @@ export default class AuthController {
 
   async sendOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, phone, purpose } = plainToInstance(OtpDto, req.body);
-      await this.service.send(email, purpose, phone);
-      return ResponseHandler.success(res, "OTP sent");
+      const { email, purpose } = plainToInstance(OtpDto, req.body);
+      await this.service.send(email, purpose);
+      return res.status(200).json({
+        success: true,
+        message: "OTP SENT",
+      });
     } catch (error) {
       next(error);
     }
   }
 
-  async RegisterStore(req: Request, res: Response, next: NextFunction) {
+  async RegisterCinema(req: Request, res: Response, next: NextFunction) {
     try {
-      const { otp, ...registerDto } = plainToInstance(
-        StoreRegisterDto,
+      const { otp, name, email, password , address} = plainToInstance(
+        CinemaRegisterDto,
         req.body
       );
 
       await this.otpService.verifyOtp(
         OtpPurpose.SIGNUP_CINEMA,
         otp,
-        registerDto.email
+        email
       );
       await this.otpService.revokeAOtp(otp);
-      const newStore = await this.service.registerStore(registerDto);
-
-      return ResponseHandler.success(res, "Store registered", {
-        store: {
-          id: newStore.id,
-          name: newStore.name,
-          email: newStore.email,
-          ownerName: newStore.ownerName,
-        },
+      const newCinema = await this.service.registerCinema(name, address, password, email );
+      return res.status(200).json({
+        success: true,
+        message: "cinema created",
+        data:{
+          id: newCinema.id,
+          name: newCinema.name,
+          email: newCinema.email,
+        }
       });
+ 
     } catch (error) {
       next(error);
     }
@@ -88,13 +95,16 @@ export default class AuthController {
       );
       await this.otpService.revokeAOtp(registerDto.otp);
       const newUser = await this.service.registerUser(registerDto);
-      return ResponseHandler.success(res, "User registered", {
-        store: {
+      return res.status(200).json({
+        success: true,
+        message: "User Created",
+        data:{
           id: newUser.id,
           name: newUser.name,
           email: newUser.email,
-        },
+        }
       });
+    
     } catch (error) {
       next(error);
     }
@@ -113,14 +123,15 @@ export default class AuthController {
         changePasswordPayload.email
       );
       await this.otpService.revokeAOtp(changePasswordPayload.otp);
-      return ResponseHandler.success(
-        res,
-        await this.service.changePassword(
-          changePasswordPayload.password,
-          changePasswordPayload.email,
-          changePasswordPayload.purpose
-        )
-      );
+      await this.service.changePassword(
+        changePasswordPayload.password,
+        changePasswordPayload.email,
+        changePasswordPayload.purpose
+      )
+      return res.status(200).json({
+        success: true,
+        message: "Sucess"
+      });
     } catch (error) {
       next(error);
     }

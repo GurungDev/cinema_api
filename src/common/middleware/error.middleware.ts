@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ExpressError } from "../class/error";
 import multer from "multer";
-import { EnvConfig } from "../../config/envConfig";
+
 import { TokenExpiredError } from "jsonwebtoken";
 
 export function errorHandler(

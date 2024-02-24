@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authController } from "./auth.controller";
-import { ChangePasswordDto, CustomerRegisterDto, LoginDto, OtpDto, StoreRegisterDto } from "./auth.dto";
+import { ChangePasswordDto, CinemaRegisterDto, CustomerRegisterDto, LoginDto, OtpDto } from "./auth.dto";
  import { Validator } from "../../common/class/validator";
 import { RequestDataPaths } from "../../common/enum";
 
@@ -13,15 +13,15 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/sendOtp",
+  "/send-otp",
   Validator.validate(OtpDto, RequestDataPaths.Body),
   authController.sendOtp.bind(authController)
 );
 
 authRouter.post(
-  "/register/store",
-  Validator.validate(StoreRegisterDto, RequestDataPaths.Body),
-  authController.RegisterStore.bind(authController)
+  "/register/cinema",
+  Validator.validate(CinemaRegisterDto, RequestDataPaths.Body),
+  authController.RegisterCinema.bind(authController)
 );
 
 authRouter.post(

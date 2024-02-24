@@ -3,7 +3,7 @@ import SeatEntity from "./entities/seat.entity";
 import { SeatRepo, seatRepo } from "./repo/seat.repo";
  
 
-export class HallService {
+export class SeatService {
     protected readonly repository: SeatRepo;
     constructor() {
         this.repository = seatRepo
@@ -16,15 +16,22 @@ export class HallService {
         return this.repository.findBy({ hall: {id: hallId} })
     }
 
-    async createOne(hall: DeepPartial<SeatEntity>) {
-        return this.repository.create(hall);
+    async createOne(seatID: DeepPartial<SeatEntity>) {
+        return this.repository.create(seatID).save();
     }
 
-    async delete(hallId: number) {
-        return this.repository.delete({ id: hallId });
+    async createMany(seats: DeepPartial<SeatEntity>[]) {
+        const entities = seats.map(seat => this.repository.create(seat));
+        return this.repository.save(entities);
+    }
+
+    async delete(seatIDId: number) {
+        return this.repository.delete({ id: seatIDId });
     }
 
     async update(seatId: number, seat: DeepPartial<SeatEntity>) {
         return this.repository.update({ id: seatId }, seat);
     }
 }
+
+export const seatService = new SeatService()

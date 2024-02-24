@@ -8,7 +8,7 @@ import {
 } from "class-validator";
 import { OtpPurpose, UserEnum } from "../../common/enum";
 
-export class StoreRegisterDto {
+export class CinemaRegisterDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -17,35 +17,24 @@ export class StoreRegisterDto {
   @IsString()
   password: string;
 
-  @IsNotEmpty()
-  @IsString()
-  long: string;
 
   @IsNotEmpty()
   @IsString()
   otp: string;
-
+  
   @IsNotEmpty()
   @IsString()
-  lat: string;
+  address:string;
+ 
 
   @IsNotEmpty()
   @IsString()
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  ownerName: string;
 
-  @Transform(({ value }) => {
-    return value && value.trim();
-  })
-  @IsString()
-  @IsByteLength(10, 10)
-  phone: string;
 }
 
-export class StoreDto {
+export class CinemaDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -56,26 +45,7 @@ export class StoreDto {
 
   @IsNotEmpty()
   @IsString()
-  long: string;
-
-  @IsNotEmpty()
-  @IsString()
-  lat: string;
-
-  @IsNotEmpty()
-  @IsString()
   email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  ownerName: string;
-
-  @Transform(({ value }) => {
-    return value && value.trim();
-  })
-  @IsString()
-  @IsByteLength(10, 10)
-  phone: string;
 }
 
 export class CustomerRegisterDto {
@@ -91,6 +61,7 @@ export class CustomerRegisterDto {
   @IsString()
   email: string;
 
+  
   @IsNotEmpty()
   @IsString()
   otp: string;
@@ -121,13 +92,6 @@ export class OtpDto {
   @IsNotEmpty()
   @IsString()
   email: string;
-
-  @Transform(({ value }) => {
-    return value && value.trim();
-  })
-  @IsString()
-  @IsByteLength(10, 10)
-  phone: string;
 
   @IsNotEmpty()
   @IsEnum(OtpPurpose)

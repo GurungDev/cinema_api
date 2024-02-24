@@ -1,13 +1,39 @@
-import { SendGridEmailServiceService } from "./sendgrid.service";
-import { storeRegister } from "./template/storeRegister";
-import { baseTemplate } from "./template/base-template";
-import { customerRegister } from "./template/customerRegister";
-import { passwordChange } from "./template/forgotPassword";
+ 
+ 
+import { baseTemplate, cinemaRegisterEmail, customerRegisterEmail, passwordChangeEmail } from "./template/template";
+ 
+import sendGrid from "@sendgrid/mail";
+
+export abstract class SendGridEmailServiceService {
+  private readonly genericEmailSender: string;
+  constructor() {
+    sendGrid.setApiKey("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");
+    this.genericEmailSender = "nishan.clinchtech@gmail.com";
+  }
+  protected async sendEmail(
+    to: string[],
+    subject: string,
+    html: string,
+    sender = this.genericEmailSender
+  ) {
+    try {
+        await sendGrid.send({
+          to,
+          from: sender,
+          subject,
+          html,
+        });
+      } catch (e) {
+        console.log(e)
+        console.log("Error while sending email")
+      }
+  }
+}
 
 export class EmailService extends SendGridEmailServiceService{
     constructor(){
         super()
-        this.mailStoreRegister = this.mailStoreRegister.bind(this)
+        this.cinemaRegisterEmailSend = this.cinemaRegisterEmailSend.bind(this)
         this.mailCustomerRegister = this.mailCustomerRegister.bind(this)
         this.mailPasswordChange = this.mailPasswordChange.bind(this)
     }
@@ -16,27 +42,27 @@ export class EmailService extends SendGridEmailServiceService{
         return baseTemplate(body);
       }
     
-      mailStoreRegister(email: string, otp: string) {
+      cinemaRegisterEmailSend(email: string, otp: string) {
         this.sendEmail(
           [email],
-          "Store Registration",
-          this.wrapGenericTemplate(storeRegister(otp))
+          "Cinemaa Register",
+          this.wrapGenericTemplate(cinemaRegisterEmail(otp))
         );
       }
 
       mailCustomerRegister(email: string, otp: string) {
         this.sendEmail(
           [email],
-          "Customer Registration",
-          this.wrapGenericTemplate(customerRegister(otp))
+          "Customer Register",
+          this.wrapGenericTemplate(customerRegisterEmail(otp))
         );
       }
 
       mailPasswordChange(email: string, otp: string) {
         this.sendEmail(
           [email],
-          "Forgot Pasword",
-          this.wrapGenericTemplate(passwordChange(otp))
+          "Password Forgot",
+          this.wrapGenericTemplate(passwordChangeEmail(otp))
         );
       }
 }

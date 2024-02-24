@@ -1,8 +1,7 @@
 import { plainToInstance } from "class-transformer";
-import { ResponseHandler } from "../../../../common/class/success.response";
-import { NextFunction, Response, Request } from "express";
-import { ValidateId } from "../../../../common/validation/id.validate";
- import { ExpressError } from "../../../../common/class/error";
+import { NextFunction, Request, Response } from "express";
+import { ExpressError } from "../../../../common/class/error";
+import { IdDto } from "../../../../common/validation/idValidation";
 import { AdminCustomerService, adminCustomerService } from "./admin.service";
 
 export default class AdminStoreController{
@@ -18,10 +17,12 @@ export default class AdminStoreController{
             const customers = await this.service.getAllCustomer();
             const serealized = this.service.transformMany(customers)
         
-            return ResponseHandler.success(res, 
-                "Successfully retrieved",
-                serealized
-            )
+            return res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: serealized
+              });
+            
         } catch (error) {
             next(error)
         }
@@ -29,11 +30,13 @@ export default class AdminStoreController{
 
     async getCount(req: Request, res: Response, next: NextFunction){
         try {
-            const storesNumber = await this.service.getCustomerNumber();
-            return ResponseHandler.success(res, 
-                "Successfully retrieved",
-                storesNumber
-            )
+            const cinemaCount = await this.service.getCustomerNumber();
+            return res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: cinemaCount
+              });
+     
         } catch (error) {
             next(error)
         }
@@ -42,16 +45,18 @@ export default class AdminStoreController{
 
     async retrieve(req: Request, res: Response, next: NextFunction){
         try {
-            const {id} = plainToInstance(ValidateId, req.params)
+            const {id} = plainToInstance(IdDto, req.params)
     
         const responseCustomer = await this.service.findBYId(id );
         if(!responseCustomer){
             throw new ExpressError(404, "Customer not found")
         }
-        return ResponseHandler.success(res, 
-            "Successfully retrieved",
-            this.service.transformOne(responseCustomer)
-        )
+        return res.status(200).json({
+            success: true,
+            message: "Sucess",
+            data: responseCustomer
+          });
+      
         } catch (error) {
             next(error)
         }

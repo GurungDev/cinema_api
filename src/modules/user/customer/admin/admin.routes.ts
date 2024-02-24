@@ -2,7 +2,7 @@ import { Router } from "express";
 import { adminStoreController } from "./admin.controller";
 import authMiddleware, { adminChecker } from "../../../auth/middleware/auth.middleware";
 import { Validator } from "../../../../common/class/validator";
-import { ValidateId } from "../../../../common/validation/id.validate";
+import { IdDto } from "../../../../common/validation/idValidation";
 import { RequestDataPaths } from "../../../../common/enum/enums";
 
 const adminCustomerRouter = Router({ mergeParams: true });
@@ -26,7 +26,7 @@ adminCustomerRouter.get(
     "/:id",
     authMiddleware,
     adminChecker,
-    Validator.validate(ValidateId, RequestDataPaths.Params),
+    Validator.validate(IdDto, RequestDataPaths.Params),
 
     adminStoreController.retrieve.bind(adminStoreController)
 ); 

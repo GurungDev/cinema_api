@@ -1,12 +1,11 @@
-import { NextFunction, Request , Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import { ExpressError } from "../../../common/class/error";
-import {authService} from "../auth.service";
- 
-import { adminService } from "../../admin/admin.service";
-import { customerService } from "../../user/customer/customer.service";
+import { authService } from "../auth.service";
 import { UserEnum } from "../../../common/enum";
-import { storeService } from "../../user/cinema/cinema.service";
-
+import { adminService } from "../../admin/admin.service";
+import { cinemaService } from "../../user/cinema/cinema.service";
+import { customerService } from "../../user/customer/customer.service";
+ 
   
     export default async function authMiddleware(req: Request, res: Response, next: NextFunction){
         try {
@@ -31,7 +30,7 @@ import { storeService } from "../../user/cinema/cinema.service";
                    req.role = UserEnum.ADMIN
                    break;
                 case UserEnum.CINEMA:
-                    user = await storeService.findBYId(userId);
+                    user = await cinemaService.findBYId(userId);
                     req.role = UserEnum.CINEMA
                     break;
                 case UserEnum.CUSTOMER:
@@ -62,7 +61,7 @@ export function adminChecker(req: Request, res: Response, next: NextFunction){
     next(error)
   }
 }
-export function storeChecker(req: Request, res: Response, next: NextFunction){
+export function cinemaChecker(req: Request, res: Response, next: NextFunction){
   try {
     
     if(req.role != UserEnum.CINEMA ||  !req.userId ){

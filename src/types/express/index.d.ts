@@ -1,5 +1,4 @@
-import { UserEnum } from "../../common/enum/enums";
-
+import { UserEnum } from "../../common/enum";
 declare global{
      namespace Express {
     interface Request {

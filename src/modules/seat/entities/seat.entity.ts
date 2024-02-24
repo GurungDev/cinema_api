@@ -7,8 +7,9 @@ import HallEntity from "../../hall/entities/hall.entity";
 export default class SeatEntity extends CustomBaseEntity {
     
     @Column()
-    seat_no: number;
+    seat_no: string;
 
     @ManyToOne(() => HallEntity, (hall) => hall.id)
-    hall: HallEntity
+    hall: HallEntity;
+    
 }

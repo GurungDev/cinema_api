@@ -1,19 +1,17 @@
 import { generateHash } from "../../../common/function/hashing";
-import { EnvConfig } from "../../../config/envConfig";
 import { AppDataSource } from "../../../data-source";
 import AdminEntity from "../entities/admin.entity";
 
  
 export async function AdminSeeder(){
     try {
-    const {hashedValue, salt}= await generateHash(EnvConfig.adminConfig.password);
-    const email = EnvConfig.adminConfig.email;
+    const {hashedValue, salt}= await generateHash("password");
     const existingAdmin = await AppDataSource.getRepository(AdminEntity).findOne({
-      where: {email: email}
+      where: {email: "admin@email.com"}
     })
 
     if(!existingAdmin){
-        await AppDataSource.getRepository(AdminEntity).create({email, password: hashedValue, salt: salt}).save();
+        await AppDataSource.getRepository(AdminEntity).create({email:"admin@email.com", password: hashedValue, salt: salt}).save();
         return console.log("Admin seeded");
     }
     console.log("Admin already seeded");

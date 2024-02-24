@@ -1,10 +1,11 @@
 import { DeepPartial } from "typeorm";
- 
+
 import CinemaEntity from "./entities/cinema.entity";
 import { plainToInstance } from "class-transformer";
 import { CinemaRepo, cinemaRepo } from "./repository/cinema.repository";
 import { CinemaSerializer } from "./cinema.serializer";
- 
+import { ExpressError } from "../../../common/class/error";
+
 
 export class CinemaService {
   protected readonly repository: CinemaRepo;
@@ -21,15 +22,27 @@ export class CinemaService {
   }
 
   async changePassword(email: string, newPassword: string) {
-    const cinema = await this.repository.findOne({where: {email} });
+    const cinema = await this.repository.findOne({ where: { email } });
     if (!cinema) {
       throw new Error('cinema not found');
     }
-    
+
     await cinema.setPassword(newPassword);
     return await cinema.save();
   }
  
+  async deleteCinema(storeId: number) {
+    return await this.repository.softDelete({ id: storeId });
+  }
+
+  async getAllCinema() {
+    return await this.repository.find();
+  }
+
+  async getCinemaCount() {
+    return await this.repository.count();
+  }
+
 
   async createOne(data: DeepPartial<CinemaEntity>) {
     const newCinema = this.repository.create({
@@ -43,16 +56,7 @@ export class CinemaService {
     return await newCinema.save();
   }
 
-
-
-  transformMany(cinema?: CinemaEntity[]) {
-    return cinema?.map((cinema) => plainToInstance(CinemaSerializer, cinema, {}));
-  }
-
-  transformOne(cinema?: CinemaEntity) {
-    return plainToInstance(CinemaSerializer, cinema, {});
-  }
-
+ 
 
 }
 

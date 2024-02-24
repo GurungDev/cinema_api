@@ -5,21 +5,21 @@ import {
   customerService,
 } from "../user/customer/customer.service";
 import jwt from "jsonwebtoken";
- import { CustomerRegisterDto, StoreDto, StoreRegisterDto } from "./auth.dto";
-import { EnvConfig } from "../../config/envConfig";
-import { Point } from "typeorm";
+ import { CustomerRegisterDto, CinemaDto, CinemaRegisterDto } from "./auth.dto";
+ import 'dotenv/config';
 import emailService, { EmailService } from "../email/emai.service";
 import { OTPService, otpService } from "../otp/otp.service";
 import { OtpPurpose, UserEnum } from "../../common/enum";
-
+import { CinemaService, cinemaService } from "../user/cinema/cinema.service";
+ 
 export class AuthService {
-  private storeService: StoreService;
+  private cinema: CinemaService;
   private customerService: CustomerService;
   private adminService: AdminService;
   private readonly emailService: EmailService;
   private readonly otpService: OTPService;
   constructor() {
-    this.storeService = storeService;
+    this.cinema = cinemaService;
     this.customerService = customerService;
     this.adminService = adminService;
     this.emailService = emailService;
@@ -27,22 +27,21 @@ export class AuthService {
   }
 
   async createToken(id: number, role: UserEnum, extraData?: any) {
-    return jwt.sign({ id, role, extraData }, EnvConfig.jwtSecret, {
-      expiresIn: EnvConfig.jwtExpiresInSec,
+    return jwt.sign({ id, role, extraData }, "secret", {
+      expiresIn: 8640000,
     });
   }
 
   async verifyToken(token: string) {
-    return jwt.verify(token, EnvConfig.jwtSecret) as {
+    return jwt.verify(token, "secret") as {
       id: number;
       role: string;
       extraData?: any;
     };
   }
 
-  async send(email: string, purpose: OtpPurpose, phone: string) {
+  async send(email: string, purpose: OtpPurpose) {
     let otp;
-    console.log(phone);
     switch (purpose) {
       case OtpPurpose.SIGNUP_CUSTOMER:
         const user = await this.customerService.findByEmail(email);
@@ -51,13 +50,6 @@ export class AuthService {
           throw new ExpressError(
             400,
             `User with email ${email} already exists. Please login.`
-          );
-        }
-
-        if (await this.customerService.findByNumber(phone)) {
-          throw new ExpressError(
-            400,
-            `User with phone Number ${phone} already exists. Please login.`
           );
         }
         await this.otpService.revokeAllSimilarOtp(purpose, email);
@@ -82,23 +74,17 @@ export class AuthService {
         break;
 
       case OtpPurpose.SIGNUP_CINEMA:
-        const store = await this.customerService.findByEmail(email);
+        const store = await this.cinema.findByEmail(email);
         if (store) {
           throw new ExpressError(
             400,
             `store with email ${email} already exists. Please login.`
           );
         }
-        if (await this.storeService.findByNumber(phone)) {
-          throw new ExpressError(
-            400,
-            `store with phone Number ${phone} already exists. Please login.`
-          );
-        }
         await this.otpService.revokeAllSimilarOtp(purpose, email);
         otp = await this.otpService.buildOtp(email, purpose);
 
-        this.emailService.mailStoreRegister(email, otp.otp);
+        this.emailService.cinemaRegisterEmailSend(email, otp.otp);
         break;
 
       case OtpPurpose.FORGOT_PASSWORD_CINEMA:
@@ -122,22 +108,13 @@ export class AuthService {
     }
   }
 
-  async registerStore(storeRegisterDto: StoreDto) {
-    const { name, password, long, lat, email, ownerName, phone } =
-      storeRegisterDto;
-
-    const pointObject: Point = {
-      type: "Point",
-      coordinates: [parseFloat(long), parseFloat(lat)],
-    };
-
-    const store = await this.storeService.createOne({
+  async registerCinema(name: string, address:string, password: string, email: string) {
+   
+    const store = await this.cinema.createOne({
       name,
       password,
-      location: pointObject,
       email,
-      ownerName,
-      phone,
+      address
     });
     return store;
   }
@@ -166,7 +143,7 @@ export class AuthService {
         );
         return "Sucesssfully Changed Password";
       case OtpPurpose.FORGOT_PASSWORD_CUSTOMER:
-        const store = await this.storeService.changePassword(email, password);
+        const store = await this.cinema.changePassword(email, password);
         return "Sucesssfully Changed Password";
       default:
         return "Invalid Purpose";
@@ -176,12 +153,9 @@ export class AuthService {
   async validate(email: string, password: string, validateFor: UserEnum) {
     let validationResponse;
     if (validateFor == UserEnum.CINEMA) {
-      validationResponse = await this.storeService.findByEmail(email);
+      validationResponse = await this.cinema.findByEmail(email);
       if (!validationResponse) {
-        throw new ExpressError(404, "Store not found");
-      }
-      if (!validationResponse.is_approved) {
-        throw new ExpressError(400, "Your store is not approved.");
+        throw new ExpressError(404, "Cinema not found");
       }
     } else if (validateFor == UserEnum.CUSTOMER) {
       validationResponse = await this.customerService.findByEmail(email);

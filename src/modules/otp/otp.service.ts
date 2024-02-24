@@ -4,7 +4,7 @@ import { OtpRepository, otpRepository } from "./repository/otp.repository";
 import { ExpressError } from "../../common/class/error";
 import { OtpEntity } from "./entities/otp.entity";
 import { DeepPartial } from "typeorm";
-import { EnvConfig } from "../../config/envConfig";
+ 
 import { OtpPurpose } from "../../common/enum";
  
 

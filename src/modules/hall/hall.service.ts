@@ -8,7 +8,7 @@ export class HallService {
         this.repository = hallRepo
     }
     async getById(id: number) {
-        return this.repository.findBy({ id })
+        return this.repository.findOneBy({ id })
     }
 
     async getAllByCinemaId(cinemaId: number) {
@@ -16,14 +16,16 @@ export class HallService {
     }
 
     async createOne(hall: DeepPartial<HallEntity>) {
-        return this.repository.create(hall);
+        return this.repository.create(hall).save();
     }
 
-    async delete(hallId: number) {
-        return this.repository.delete({ id: hallId });
+    async delete(hallId: number, cinemaId: number) {
+        return this.repository.softDelete({ id: hallId , cinema: {id: cinemaId}});
     }
 
     async update(hallId: number, hall: DeepPartial<HallEntity>) {
         return this.repository.update({ id: hallId }, hall);
     }
 }
+
+export const hallService = new HallService()

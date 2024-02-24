@@ -1,4 +1,4 @@
-import { IsEnum } from "class-validator";
+import { IsEnum, IsISO8601 } from "class-validator";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { CustomBaseEntity } from "../../../common/baseEntity/custom-base-entity";
 import { ShowTime } from "../../../common/enum";
@@ -11,7 +11,8 @@ import CinemaEntity from "../../user/cinema/entities/cinema.entity";
 @Entity({name: 'show'})
 export default class ShowEntity extends CustomBaseEntity {
     @Column()
-    date: Date;
+    @IsISO8601()
+    date: string;
 
     @Column()
     @IsEnum(ShowTime)

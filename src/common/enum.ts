@@ -4,6 +4,19 @@ export enum UserEnum {
     ADMIN= "admin",
 }
 
+export enum GenreEnum {
+  ACTION = "Action",
+  COMEDY = "Comedy",
+  DRAMA = "Drama",
+  FANTASY = "Fantasy",
+  HORROR = "Horror",
+  MYSTERY = "Mystery",
+  ROMANCE = "Romance",
+  THRILLER = "Thriller",
+  WESTERN = "Western"
+ 
+}
+
 export enum UserServiceEnum {
   CINEMA= "cinemaService",
   CUSTOMER= "customerService",

@@ -15,6 +15,9 @@ export default class MovieEntity extends CustomBaseEntity {
 
     @Column()
     title: string;
+    
+    @Column({nullable:true})
+    image: string;
 
     @Column({ nullable: true})
     description: string

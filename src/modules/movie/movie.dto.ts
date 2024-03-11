@@ -1,5 +1,6 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { GenreEnum, UserEnum } from "../../common/enum";
+import { Transform } from "class-transformer";
 
 export class MovieRegisterDto{
  
@@ -16,8 +17,8 @@ export class MovieRegisterDto{
     @IsString()
     title: string;
 
-
     @IsNotEmpty()
+    @Transform(({ value }) => Number(value))
     @IsNumber()
     durationInMin: number;
 }

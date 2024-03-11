@@ -15,7 +15,8 @@ export default class MovieController{
         try {
             const {genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
             const cinemaId = req.userId;
-            const movie = await this.service.createOne({cinema: {id: cinemaId} , genre, title, description, durationInMinute: durationInMin });
+            const image = req.body.image;
+            const movie = await this.service.createOne({cinema: {id: cinemaId} , genre, image,  title, description, durationInMinute: durationInMin });
             return res.status(200).json({
                 success: true,
                 message: "Sucess",

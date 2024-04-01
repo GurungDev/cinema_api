@@ -22,5 +22,4 @@ export class MovieRegisterDto{
     @IsNumber()
     durationInMin: number;
 }
-
  

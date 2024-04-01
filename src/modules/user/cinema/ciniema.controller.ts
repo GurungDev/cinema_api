@@ -4,6 +4,7 @@ import { NextFunction, Response, Request } from "express";
 import { CinemaService, cinemaService } from "./cinema.service";
 import { IdDto } from "../../../common/validation/idValidation";
 import { ExpressError } from "../../../common/class/error";
+import { CinemaPatchDto } from "./cinema.dto";
 
 export default class CinemaController {
     private readonly service: CinemaService;
@@ -47,12 +48,81 @@ export default class CinemaController {
         try {
             const { id } = plainToInstance(IdDto, req.params)
 
-            const responseStore = await this.service.findBYId(id);
+            const responseCinema = await this.service.findBYId(id);
 
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
-                data: responseStore
+                data: responseCinema
+            });
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getByCinema(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = req.userId
+
+            const responseCinema = await this.service.findBYId(id);
+
+            return res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: responseCinema
+            });
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async update(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = req.userId
+            const { name, email, address } = plainToInstance(
+                CinemaPatchDto,
+                req.body
+            );
+            const responseCinema = await this.service.findBYId(id);
+            if(!responseCinema){
+                throw new ExpressError(404, "Cinema not found")
+            }
+            if (name) {
+                responseCinema.name = name;
+            }
+            if (email) {
+                responseCinema.email = email;
+            }
+            if (address) {
+                responseCinema.address = address;
+            }
+            await responseCinema.save()
+            return res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: responseCinema
+            });
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async changeSatatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = plainToInstance(IdDto, req.params)
+
+            const responseCinema = await this.service.findBYId(id);
+            if (!responseCinema) {
+                throw new ExpressError(404, "Cinema not found.")
+            }
+            responseCinema.isActive = !responseCinema?.isActive;
+            await responseCinema.save();
+            return res.status(200).json({
+                success: true,
+                message: "Sucess"
             });
 
         } catch (error) {

@@ -13,14 +13,6 @@ export class CinemaRegisterDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-
-
-  @IsNotEmpty()
-  @IsString()
-  otp: string;
   
   @IsNotEmpty()
   @IsString()

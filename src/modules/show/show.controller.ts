@@ -83,6 +83,31 @@ export class ShowController{
         }
     }
 
+    async deleteShow(req: Request, res: Response, next: NextFunction){
+        try {
+            const {id} = plainToInstance(IdDto, req.params);
+            const cinemaId = req.userId;
+            const show = await this.service.getById(id);
+            if(!show){
+                throw new ExpressError(404,"Show not found");
+            }
+            console.log(show)
+            if(show?.cinema?.id != cinemaId){
+                throw new ExpressError(400, "Cinema doesn't own this show.");
+            }
+
+            show.isActive = false;
+            await show.softRemove();
+            return res.status(200).json({
+                success: true,
+                message: "Sucess"
+              });
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
     async getAccordingToMovie(req: Request, res: Response, next: NextFunction){
         try {
             const {id} = plainToInstance(IdDto, req.params);

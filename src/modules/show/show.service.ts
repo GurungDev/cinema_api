@@ -9,15 +9,15 @@ export class ShowService {
         this.repository = showRepo
     }
     async getById(id: number) {
-        return await this.repository.findBy({ id })
+        return await this.repository.findOne({ where: { id: id, isActive: true  }, relations: { cinema: true, hall: true, movie: true } })
     }
 
     async getAllByCinemaId(cinemaId: number) {
-        return await this.repository.findBy({ cinema: { id: cinemaId } })
+        return await this.repository.find({ where: { cinema: { id: cinemaId }, isActive: true }, relations: { movie: true, hall: true } , order: {createdAt: "DESC"}})
     }
 
     async getAllByMovieId(movieID: number) {
-        return await this.repository.find({ where: { movie: { id: movieID } }, relations: { cinema: true, hall: true, movie: true } })
+        return await this.repository.find({ where: { movie: { id: movieID }, isActive: true  }, relations: { cinema: true, hall: true, movie: true } })
     }
 
     async getMovie(hallId: number, movieId: number, date: string, show_time: ShowTime) {
@@ -41,9 +41,7 @@ export class ShowService {
 
     }
 
-    async delete(showId: number) {
-        return await this.repository.delete({ id: showId });
-    }
+
 
     async update(showId: number, show: DeepPartial<ShowEntity>) {
         return await this.repository.update({ id: showId }, show);

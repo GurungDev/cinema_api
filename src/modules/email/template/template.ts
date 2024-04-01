@@ -15,12 +15,12 @@ export function baseTemplate(body: string) {
         </html>
     `;
 }
-export function cinemaRegisterEmail(token: string) {
+export function cinemaRegisterEmail(password: string) {
   return `
     <div class="body">
    
-      <p style=" font-size:22px; font-weight: 400;">OTP for cinema register</p>
-      <p style=" font-weight: 400;">${token}</p>
+      <p style=" font-size:22px; font-weight: 400;">Password for your cinema is given below.</p>
+      <p style=" font-weight: 400;">${password}</p>
    
     </div>`;
 }

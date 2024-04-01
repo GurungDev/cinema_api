@@ -1,5 +1,5 @@
 import { IsEnum, IsISO8601 } from "class-validator";
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany } from "typeorm";
 import { CustomBaseEntity } from "../../../common/baseEntity/custom-base-entity";
 import { ShowTime } from "../../../common/enum";
 import HallEntity from "../../hall/entities/hall.entity";
@@ -18,6 +18,9 @@ export default class ShowEntity extends CustomBaseEntity {
     @IsEnum(ShowTime)
     start_time: ShowTime;
 
+    @Column({default: true})
+    isActive: boolean;
+
     @ManyToOne(() => CinemaEntity, (cinema) => cinema.shows)
     cinema: CinemaEntity
 
@@ -29,4 +32,7 @@ export default class ShowEntity extends CustomBaseEntity {
 
     @OneToMany(() => ReservationEntity, (reservation) => reservation.show)
     reservations: ReservationEntity[]
+
+    @DeleteDateColumn()
+    deleteAt: Date;
 }

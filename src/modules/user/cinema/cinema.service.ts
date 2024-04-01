@@ -36,7 +36,7 @@ export class CinemaService {
   }
 
   async getAllCinema() {
-    return await this.repository.find();
+    return await this.repository.find({order: {createdAt: "desc"}});
   }
 
   async getCinemaCount() {

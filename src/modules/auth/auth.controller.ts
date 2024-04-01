@@ -9,14 +9,20 @@ import {
   OtpDto,
 } from "./auth.dto";
 import { AuthService } from "./auth.service";
+import otpGenerator from "otp-generator";
+import emailService from "../email/emai.service";
+import { ExpressError } from "../../common/class/error";
+import { CinemaService } from "../user/cinema/cinema.service";
 
 export default class AuthController {
   private readonly service: AuthService;
   private readonly otpService: OTPService;
+  private readonly cinema: CinemaService
 
   constructor() {
     this.service = new AuthService();
     this.otpService = otpService;
+    this.cinema = new CinemaService();
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
@@ -58,17 +64,19 @@ export default class AuthController {
 
   async RegisterCinema(req: Request, res: Response, next: NextFunction) {
     try {
-      const { otp, name, email, password , address} = plainToInstance(
+      const {  name, email,   address} = plainToInstance(
         CinemaRegisterDto,
         req.body
       );
-
-      await this.otpService.verifyOtp(
-        OtpPurpose.SIGNUP_CINEMA,
-        otp,
-        email
-      );
-      await this.otpService.revokeAOtp(otp);
+      const store = await this.cinema.findByEmail(email);
+      if (store) {
+        throw new ExpressError(
+          400,
+          `Cinema with email ${email} already exists. Please login.`
+        );
+      }
+      const password = otpGenerator.generate(6);
+      emailService.cinemaRegisterEmailSend(email, password);
       const newCinema = await this.service.registerCinema(name, address, password, email );
       return res.status(200).json({
         success: true,

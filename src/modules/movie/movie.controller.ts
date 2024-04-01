@@ -28,6 +28,48 @@ export default class MovieController{
         }
     }
 
+    async updateMovie(req: Request, res: Response, next: NextFunction){
+        try {
+            const {genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
+            const cinemaId = req.userId;
+            const image = req.body.image;
+            const {id} = plainToInstance(IdDto, req.params);
+           
+            const movie = await this.service.getMovieAccordingToId(id);
+       
+            if(!movie){
+                throw new ExpressError(404, "Movie not found.")
+            }
+            if(movie.cinema.id != cinemaId){
+                throw new ExpressError(404, "Cinema not associated.")
+            }
+            if(genre){
+                movie.genre = genre
+            }
+            if(title){
+                movie.title = title
+            }
+            if(description){
+                movie.description = description
+            }
+            if(durationInMin){
+                movie.durationInMinute = durationInMin
+            }
+            if(image){
+                movie.image = image;
+            }
+            await movie.save()
+            return res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: movie
+              });
+          
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async get(req: Request, res: Response, next: NextFunction){
         try {
             const movie = await this.service.getAll();

@@ -2,7 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { NextFunction, Request, Response } from "express";
 import multer, { Multer } from "multer";
 import streamifier from "streamifier"
- 
+
 
 
 cloudinary.config({
@@ -15,7 +15,7 @@ cloudinary.config({
 interface UploadedFiles {
     [fieldname: string]: Express.Multer.File[];
 }
-const uploadImage = () => {
+const uploadImage = (isNeeded: boolean = true) => {
     // Multer configuration
     const storage = multer.memoryStorage();
     const upload = multer({ storage: storage }).single("image");
@@ -27,9 +27,14 @@ const uploadImage = () => {
                 if (err) {
                     return res.status(400).json({ error: "Failed to upload image." });
                 }
-                
+
                 // Check if image file is present
-                if (!req.file) {
+                if (!req.file && !isNeeded) {
+                    return next()
+                }
+
+                // Check if image file is present
+                if (!req.file && isNeeded) {
                     return res.status(400).json({ error: "No image file provided." });
                 }
 
@@ -45,7 +50,7 @@ const uploadImage = () => {
                         req.body.image = result?.secure_url;
                         next();
                     }
-                ).end(req.file.buffer);
+                ).end(req?.file?.buffer);
 
                 if (!result) {
                     return res.status(500).json({ error: "Failed to upload image to Cloudinary." });

@@ -73,20 +73,6 @@ export class AuthService {
         this.emailService.mailPasswordChange(email, otp.otp);
         break;
 
-      case OtpPurpose.SIGNUP_CINEMA:
-        const store = await this.cinema.findByEmail(email);
-        if (store) {
-          throw new ExpressError(
-            400,
-            `store with email ${email} already exists. Please login.`
-          );
-        }
-        await this.otpService.revokeAllSimilarOtp(purpose, email);
-        otp = await this.otpService.buildOtp(email, purpose);
-
-        this.emailService.cinemaRegisterEmailSend(email, otp.otp);
-        break;
-
       case OtpPurpose.FORGOT_PASSWORD_CINEMA:
         const storePasswordForgot = await this.customerService.findByEmail(
           email
@@ -142,7 +128,7 @@ export class AuthService {
           password
         );
         return "Sucesssfully Changed Password";
-      case OtpPurpose.FORGOT_PASSWORD_CUSTOMER:
+      case OtpPurpose.FORGOT_PASSWORD_CINEMA:
         const store = await this.cinema.changePassword(email, password);
         return "Sucesssfully Changed Password";
       default:
@@ -154,8 +140,12 @@ export class AuthService {
     let validationResponse;
     if (validateFor == UserEnum.CINEMA) {
       validationResponse = await this.cinema.findByEmail(email);
+      
       if (!validationResponse) {
         throw new ExpressError(404, "Cinema not found");
+      }
+      if(!validationResponse.isActive){
+        throw new ExpressError(404, "Cinema not active");
       }
     } else if (validateFor == UserEnum.CUSTOMER) {
       validationResponse = await this.customerService.findByEmail(email);

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToOne } from "typeorm";
 import { CustomBaseEntity } from "../../../common/baseEntity/custom-base-entity";
 import HallEntity from "../../hall/entities/hall.entity";
  
@@ -12,4 +12,6 @@ export default class SeatEntity extends CustomBaseEntity {
     @ManyToOne(() => HallEntity, (hall) => hall.id)
     hall: HallEntity;
     
+    @DeleteDateColumn()
+    deletedAt: Date
 }

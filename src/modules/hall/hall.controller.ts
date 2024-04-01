@@ -7,57 +7,85 @@ import { HallRegisterDto } from "./hall.dto";
 import { SeatService, seatService } from "../seat/seat.service";
 import SeatEntity from "../seat/entities/seat.entity";
 import { DeepPartial } from "typeorm";
- 
 
-export default class HallController{
+
+export default class HallController {
     private readonly service: HallService
     private readonly seatService: SeatService
-    constructor(){
+    constructor() {
         this.service = hallService;
         this.seatService = seatService
     }
 
-    async post(req: Request, res: Response, next: NextFunction){
+    async post(req: Request, res: Response, next: NextFunction) {
         try {
-            const {name, seats } = plainToInstance(HallRegisterDto, req.body);
-            
+            const { name, seats } = plainToInstance(HallRegisterDto, req.body);
+
             const cinemaId = req.userId;
-            const hall = await this.service.createOne({cinema: {id: cinemaId} , name });
+            const hall = await this.service.createOne({ cinema: { id: cinemaId }, name });
             const seatList: DeepPartial<SeatEntity>[] = []
-            seats.forEach((item)=>{
+            seats.forEach((item) => {
                 seatList.push({
-                    seat_no:item,
-                    hall: {id: hall.id}
+                    seat_no: item,
+                    hall: { id: hall.id }
                 })
             })
             res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: hall
-              });
+            });
             await this.seatService.createMany(seatList);
-          
-          
+
+
         } catch (error) {
             next(error)
         }
     }
 
-    // async get(req: Request, res: Response, next: NextFunction){
-    //     try {
-    //         const movie = await this.service.getAll();
-    //         return res.status(200).json({
-    //             success: true,
-    //             message: "Sucess",
-    //             data: movie
-    //           });
+    async updateHall(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { name, seats } = plainToInstance(HallRegisterDto, req.body);
+            const { id } = plainToInstance(IdDto, req.params)
+            const cinemaId = req.userId;
           
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // }
+            const hall = await this.service.getById(id);
+            if (!hall) {
+                throw new Error("Hall not found.")
+            }
+            if (hall.cinema?.id != cinemaId) {
+                throw new Error("You don't own this hall.")
+            }
 
-    async getAccordingToCinema(req: Request, res: Response, next: NextFunction){
+            hall.name = name;
+            hall.save();
+            res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: hall
+            });
+
+            await this.seatService.deleteAllByHallId(id);
+
+            const seatList: DeepPartial<SeatEntity>[] = []
+            seats.forEach((item) => {
+                seatList.push({
+                    seat_no: item,
+                    hall: { id: hall.id }
+                })
+            })
+
+            await this.seatService.createMany(seatList);
+
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+
+    async getAccordingToCinema(req: Request, res: Response, next: NextFunction) {
         try {
             const cinemaId = req.userId;
             const hall = await this.service.getAllByCinemaId(cinemaId);
@@ -65,41 +93,41 @@ export default class HallController{
                 success: true,
                 message: "Sucess",
                 data: hall
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }
     }
 
 
-    async deleteHall(req: Request, res: Response, next: NextFunction){
+    async deleteHall(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id} = plainToInstance(IdDto, req.params);
+            const { id } = plainToInstance(IdDto, req.params);
             const cinemaId = req.userId;
             const hall = await this.service.delete(id, cinemaId);
             return res.status(200).json({
                 success: true,
                 message: "Sucess"
-              });
+            });
         } catch (error) {
             next(error)
         }
     }
 
-    async retrieve(req: Request, res: Response, next: NextFunction){
+    async retrieve(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id} = plainToInstance(IdDto, req.params);
+            const { id } = plainToInstance(IdDto, req.params);
             const hall = await this.service.getById(id);
-            if(!hall){
+            if (!hall) {
                 throw new ExpressError(404, "Hall not found.")
             }
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: hall
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }

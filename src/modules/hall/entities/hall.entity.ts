@@ -2,6 +2,7 @@ import { Column, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, Point, P
 import { CustomBaseEntity } from "../../../common/baseEntity/custom-base-entity";
 import CinemaEntity from "../../user/cinema/entities/cinema.entity";
 import SeatEntity from "../../seat/entities/seat.entity";
+import ShowEntity from "../../show/entities/show.entity";
  
  
  
@@ -13,8 +14,11 @@ export default class HallEntity extends CustomBaseEntity {
     @ManyToOne(() => CinemaEntity, (cinema) => cinema.halls)
     cinema: CinemaEntity
 
-    @OneToMany(() => SeatEntity, (seat) => seat.hall)
+    @OneToMany(() => SeatEntity, (seat) => seat.hall , {onDelete: "CASCADE"})
     seats: SeatEntity[]
+
+    @OneToMany(() => ShowEntity, (show) => show.hall, {onDelete: "CASCADE"})
+    shows: ShowEntity[]
 
     @DeleteDateColumn()
     deletedDate: Date

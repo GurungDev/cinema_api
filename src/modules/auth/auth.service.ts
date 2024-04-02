@@ -74,7 +74,7 @@ export class AuthService {
         break;
 
       case OtpPurpose.FORGOT_PASSWORD_CINEMA:
-        const storePasswordForgot = await this.customerService.findByEmail(
+        const storePasswordForgot = await this.cinema.findByEmail(
           email
         );
         if (!storePasswordForgot) {

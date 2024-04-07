@@ -31,6 +31,12 @@ export enum OtpPurpose  {
 };
 
 
+export enum SeatStatus{
+  RESERVED = "reserved",
+  BOOKED = "booked"
+}
+
+
 export enum ShowTime  {
   _7Am = "7_am",
   _10Am = "10_am",

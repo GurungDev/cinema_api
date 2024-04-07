@@ -13,7 +13,7 @@ export class ReservationService {
     }
 
     async getAllReservationByShowId(id: number) {
-        return this.repository.findBy({ show: {id} })
+        return this.repository.find({where: {show: {id}}, relations: {customer: true, show: true} })
     }
 
     async getAllByUserId(userId: number) {
@@ -21,7 +21,7 @@ export class ReservationService {
     }
 
     async createOne(reservation: DeepPartial<ReservationEntity>) {
-        return this.repository.create(reservation);
+        return this.repository.create(reservation).save();
     }
 
     async update(reservationId: number, reservation: DeepPartial<ReservationEntity>) {

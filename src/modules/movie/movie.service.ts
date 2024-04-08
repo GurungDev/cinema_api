@@ -15,16 +15,16 @@ export default class MovieService {
         return movie;
     }
 
-    async getMovieAccordingToCinemaId(cinemaId: number) {
-        return await this.repository.findBy({ cinema: { id: cinemaId } });
+    async getMovieAccordingToCinemaId() {
+        return await this.repository.find();
     }
 
-    async getMovieCountAccordingToCinemaId(cinemaId: number) {
-        return await this.repository.countBy({ cinema: { id: cinemaId } });
+    async getMovieCountAccordingToCinemaId() {
+        return await this.repository.countBy({});
     }
 
     async getMovieAccordingToId(id: number) {
-        return await this.repository.findOne({ where: { id: id }, relations: { cinema: true } });
+        return await this.repository.findOne({ where: { id: id } });
     }
 
     async createOne(movie: DeepPartial<MovieEntity>) {
@@ -40,7 +40,7 @@ export default class MovieService {
             throw new ExpressError(400, "Movie cannot be deleted as it has associated shows.");
         }
 
-        return this.repository.softDelete({ id: movieId, cinema: { id: cinemaId } });
+        return this.repository.softDelete({ id: movieId });
     }
 
     async update(movieId: number, movie: DeepPartial<MovieEntity>) {

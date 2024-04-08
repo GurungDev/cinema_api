@@ -26,8 +26,6 @@ export default class CinemaEntity extends CustomBaseEntity {
     @Column({default: true})  
     isActive: boolean;
 
-    @OneToMany(() => MovieEntity, (movie) => movie.cinema)
-    movies: MovieEntity[]
 
     @OneToMany(() => ShowEntity, (show) => show.cinema)
     shows: ShowEntity[]

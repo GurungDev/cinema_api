@@ -23,9 +23,6 @@ export default class MovieEntity extends CustomBaseEntity {
     @Column({ nullable: true})
     description: string
 
-    @ManyToOne(() => CinemaEntity, (cinema) => cinema.movies)
-    cinema: CinemaEntity
-
     @OneToMany(() => ShowEntity, (show) => show.movie, {onDelete: "CASCADE"})
     shows: ShowEntity[]
 

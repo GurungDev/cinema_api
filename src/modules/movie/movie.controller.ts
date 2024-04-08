@@ -5,57 +5,55 @@ import { IdDto } from "../../common/validation/idValidation";
 import MovieService, { movieService } from "./movie.service";
 import { MovieRegisterDto } from "./movie.dto";
 
-export default class MovieController{
+export default class MovieController {
     private readonly service: MovieService
-    constructor(){
+    constructor() {
         this.service = movieService;
     }
 
-    async post(req: Request, res: Response, next: NextFunction){
+    async post(req: Request, res: Response, next: NextFunction) {
         try {
-            const {genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
+            const { genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
             const cinemaId = req.userId;
             const image = req.body.image;
-            const movie = await this.service.createOne({cinema: {id: cinemaId} , genre, image,  title, description, durationInMinute: durationInMin });
+            const movie = await this.service.createOne({ genre, image, title, description, durationInMinute: durationInMin });
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: movie
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }
     }
 
-    async updateMovie(req: Request, res: Response, next: NextFunction){
+    async updateMovie(req: Request, res: Response, next: NextFunction) {
         try {
-            const {genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
-            const cinemaId = req.userId;
+            const { genre, title, description, durationInMin } = plainToInstance(MovieRegisterDto, req.body);
+
             const image = req.body.image;
-            const {id} = plainToInstance(IdDto, req.params);
-           
+            const { id } = plainToInstance(IdDto, req.params);
+
             const movie = await this.service.getMovieAccordingToId(id);
-       
-            if(!movie){
+
+            if (!movie) {
                 throw new ExpressError(404, "Movie not found.")
             }
-            if(movie.cinema.id != cinemaId){
-                throw new ExpressError(404, "Cinema not associated.")
-            }
-            if(genre){
+
+            if (genre) {
                 movie.genre = genre
             }
-            if(title){
+            if (title) {
                 movie.title = title
             }
-            if(description){
+            if (description) {
                 movie.description = description
             }
-            if(durationInMin){
+            if (durationInMin) {
                 movie.durationInMinute = durationInMin
             }
-            if(image){
+            if (image) {
                 movie.image = image;
             }
             await movie.save()
@@ -63,70 +61,70 @@ export default class MovieController{
                 success: true,
                 message: "Sucess",
                 data: movie
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }
     }
 
-    async get(req: Request, res: Response, next: NextFunction){
+    async get(req: Request, res: Response, next: NextFunction) {
         try {
             const movie = await this.service.getAll();
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: movie
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }
     }
 
-    async getAccordingToCinema(req: Request, res: Response, next: NextFunction){
+    async getAccordingToCinema(req: Request, res: Response, next: NextFunction) {
         try {
-            const cinemaId = req.userId;
-            const movie = await this.service.getMovieAccordingToCinemaId(cinemaId);
+
+            const movie = await this.service.getMovieAccordingToCinemaId();
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: movie
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }
     }
 
 
-    async deleteMovie(req: Request, res: Response, next: NextFunction){
+    async deleteMovie(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id} = plainToInstance(IdDto, req.params);
+            const { id } = plainToInstance(IdDto, req.params);
             const cinemaId = req.userId;
             const movie = await this.service.delete(id, cinemaId);
             return res.status(200).json({
                 success: true,
                 message: "Sucess"
-              });
+            });
         } catch (error) {
             next(error)
         }
     }
 
-    async retrieve(req: Request, res: Response, next: NextFunction){
+    async retrieve(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id} = plainToInstance(IdDto, req.params);
+            const { id } = plainToInstance(IdDto, req.params);
             const movie = await this.service.getMovieAccordingToId(id);
-            if(!movie){
+            if (!movie) {
                 throw new ExpressError(404, "Movie not found.")
             }
             return res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: movie
-              });
-          
+            });
+
         } catch (error) {
             next(error)
         }

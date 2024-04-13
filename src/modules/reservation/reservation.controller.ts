@@ -38,13 +38,45 @@ export class ReservationController {
     async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = plainToInstance(IdDto, req.params)
+
             const reservation = await this.service.getAllReservationByShowId(id)
             res.status(200).json({
                 success: true,
                 message: "Sucess",
                 data: reservation
             });
-         
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getAllByAdmin(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const id = req.userId;
+            const reservation = await this.service.getAllByAdmin(id)
+            res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: reservation
+            });
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getAllBookings(req: Request, res: Response, next: NextFunction) {
+        try {
+            const id = req.userId;
+            const reservation = await this.service.getAllByUserId(id)
+            res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: reservation
+            });
+
         } catch (error) {
             next(error)
         }

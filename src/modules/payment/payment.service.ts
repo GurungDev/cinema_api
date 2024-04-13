@@ -11,9 +11,7 @@ export class PaymentService {
         return this.repository.findBy({ id })
     }
 
-    async getByReservationId(reservationId: number) {
-        return this.repository.findBy({ reservation: {id: reservationId} })
-    }
+ 
 
     async createOne(payment: DeepPartial<PaymentEntity>) {
         return this.repository.create(payment);

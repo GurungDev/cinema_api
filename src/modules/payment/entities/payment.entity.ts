@@ -14,12 +14,6 @@ export default class PaymentEntity extends CustomBaseEntity {
     amountInRs: number;
 
     @Column()
-    paymentType: string;
-
-    @Column()
     paymentId: string;
 
-    @OneToOne(() => ReservationEntity)
-    @JoinColumn()
-    reservation: ReservationEntity
 }

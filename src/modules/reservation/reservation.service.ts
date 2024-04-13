@@ -1,5 +1,5 @@
 import { DeepPartial } from "typeorm";
- 
+
 import { ReservationRepo, reservationRepo } from "./repo/reservation.repo";
 import ReservationEntity from "./entities/reservation.entity";
 
@@ -13,13 +13,18 @@ export class ReservationService {
     }
 
     async getAllReservationByShowId(id: number) {
-        return this.repository.find({where: {show: {id}}, relations: {customer: true, show: true} })
+        return this.repository.find({ where: { show: { id } }, relations: { customer: true, seats: true, show: true, payment: true } })
     }
 
     async getAllByUserId(userId: number) {
-        return this.repository.findBy({ customer: {id: userId} })
+        return this.repository.find({ where: { customer: { id: userId } }, relations: { customer: true, seats: { seat: true }, show: true, payment: true } })
     }
 
+    async getAllByAdmin(userId: number) {
+        return this.repository.find({
+            where: { show: { hall: { cinema: { id: userId } } } }, relations: { customer: true, seats: { seat: true }, show: { hall: { cinema: true } }, payment: true }
+        })
+    }
     async createOne(reservation: DeepPartial<ReservationEntity>) {
         return this.repository.create(reservation).save();
     }

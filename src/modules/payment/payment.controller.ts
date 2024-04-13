@@ -28,22 +28,7 @@ export class PaymentController {
             const userId = req.userId;
             //create payment
             const { seats, pidx, amountInRs } = plainToInstance(PaymentDto, req.body)
-            let data = {
-                pidx: pidx,
-            };
-
-            let config = {
-                headers: { Authorization: `key bf5cc78f95314623b8f12005435b87bd` },
-            };
-
-            const response: any = await axios.post(
-                "https://a.khalti.com/api/v2/epayment/lookup/",
-                data,
-                config
-            );
-            if (response?.data.status != "Completed") {
-                throw new Error(response.data.status);
-            }
+       
             const newPayment = await this.service.createOne({ amountInRs, customer: { id: userId }, paymentId: pidx })
 
             const reservation = await this.reservationService.createOne({ show: { id: id }, customer: { id: userId }, status: SeatStatus.BOOKED, payment: { id: newPayment.id } })

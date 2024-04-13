@@ -21,7 +21,7 @@ export class ShowController{
 
     async creatAShow(req: Request, res: Response, next: NextFunction){
         try {
-            const {hall_id, date, start_time, movie_id } = plainToInstance(ShowRegisterDto, req.body);
+            const {hall_id, date,price, start_time, movie_id } = plainToInstance(ShowRegisterDto, req.body);
             const cinemaId = req.userId;
             const hall = await this.hallService.getById(hall_id);
             if(!hall){
@@ -44,6 +44,7 @@ export class ShowController{
                 }   
                 seatList.push({
                     date: date,
+                    price: price,
                     start_time: item,
                     hall: { id: hall_id },
                     movie: { id: movie_id },

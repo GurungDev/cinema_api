@@ -15,6 +15,11 @@ export class ShowRegisterDto{
     @IsNumber()
     movie_id: number;
 
+    @Transform(({ value }) => Number(value))
+    @IsNotEmpty()
+    @IsNumber()
+    price: number;
+
     @IsNotEmpty()
     @IsISO8601()
     date: string;

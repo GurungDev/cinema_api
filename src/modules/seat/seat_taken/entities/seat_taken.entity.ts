@@ -1,6 +1,5 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { Entity, ManyToOne } from "typeorm";
 import { CustomBaseEntity } from "../../../../common/baseEntity/custom-base-entity";
-import HallEntity from "../../../hall/entities/hall.entity";
 import ReservationEntity from "../../../reservation/entities/reservation.entity";
 import SeatEntity from "../../entities/seat.entity";
  

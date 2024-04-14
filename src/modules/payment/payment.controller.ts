@@ -1,14 +1,12 @@
 import { plainToInstance } from "class-transformer";
 import { NextFunction, Request, Response } from "express";
-import { PaymentService } from "./payment.service";
-import { ReservationService } from "../reservation/reservation.service";
+import { SeatStatus } from "../../common/enum";
 import { IdDto } from "../../common/validation/idValidation";
-import { ResevationDto } from "../reservation/reservation.dto";
+import { ReservationService } from "../reservation/reservation.service";
 import SeatTakenEntity from "../seat/seat_taken/entities/seat_taken.entity";
 import { SeatTakenService } from "../seat/seat_taken/seat.taken.service";
-import { SeatStatus } from "../../common/enum";
 import { PaymentDto } from "./payment.dto";
-import axios from "axios";
+import { PaymentService } from "./payment.service";
 
 
 

@@ -17,7 +17,7 @@ export class ReservationService {
     }
 
     async getAllByUserId(userId: number) {
-        return this.repository.find({ where: { customer: { id: userId } }, relations: { customer: true, seats: { seat: true }, show: true, payment: true } })
+        return this.repository.find({ where: { customer: { id: userId } }, relations: { customer: true, seats: { seat: true }, show: { reservations: true, hall: true, movie: true, cinema: true }, payment: true } })
     }
 
     async getAllByAdmin(userId: number) {

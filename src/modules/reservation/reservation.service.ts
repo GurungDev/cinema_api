@@ -25,6 +25,12 @@ export class ReservationService {
             where: { show: { hall: { cinema: { id: userId } } } }, relations: { customer: true, seats: { seat: true }, show: { hall: { cinema: true } }, payment: true }
         })
     }
+
+    async getAllBySuperAdmin() {
+        return this.repository.find({
+            where: { show: { isActive: true } }, relations: { customer: true, seats: { seat: true }, show: { hall: { cinema: true } }, payment: true }
+        })
+    }
     async createOne(reservation: DeepPartial<ReservationEntity>) {
         return this.repository.create(reservation).save();
     }

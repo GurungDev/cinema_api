@@ -10,6 +10,8 @@ const ReservationRouter = Router();
 ReservationRouter.get("/bookings", authMiddleware, userChecker,  reservationController.getAllBookings.bind(reservationController))
 ReservationRouter.get("/all", authMiddleware, cinemaChecker,  reservationController.getAllByAdmin.bind(reservationController))
 
+ReservationRouter.get("/admin/all", authMiddleware, adminChecker,  reservationController.getAllBySuperAdmin.bind(reservationController))
+
 ReservationRouter.post("/:id", authMiddleware, userChecker, Validator.validate(IdDto, RequestDataPaths.Params), Validator.validate(ResevationDto, RequestDataPaths.Body), reservationController.create.bind(reservationController))
 ReservationRouter.get("/:id", authMiddleware, cinemaChecker, Validator.validate(IdDto, RequestDataPaths.Params), reservationController.getAll.bind(reservationController))
 

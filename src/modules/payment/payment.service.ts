@@ -10,9 +10,7 @@ export class PaymentService {
     async getById(id: number) {
         return this.repository.findBy({ id })
     }
-
- 
-
+    
     async createOne(payment: DeepPartial<PaymentEntity>) {
         return this.repository.create(payment);
     }

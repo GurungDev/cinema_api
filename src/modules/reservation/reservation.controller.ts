@@ -67,6 +67,22 @@ export class ReservationController {
         }
     }
 
+    async getAllBySuperAdmin(req: Request, res: Response, next: NextFunction) {
+        try {
+
+
+            const reservation = await this.service.getAllBySuperAdmin()
+            res.status(200).json({
+                success: true,
+                message: "Sucess",
+                data: reservation
+            });
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async getAllBookings(req: Request, res: Response, next: NextFunction) {
         try {
             const id = req.userId;

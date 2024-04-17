@@ -9,16 +9,37 @@ export class ShowService {
         this.repository = showRepo
     }
     async getById(id: number) {
-        return await this.repository.findOne({ where: { id: id, isActive: true  }, relations: { cinema: true, hall: true, movie: true } })
+        return await this.repository.findOne({ where: { id: id, isActive: true }, relations: { cinema: true, hall: true, movie: true } })
     }
 
     async getAllByCinemaId(cinemaId: number) {
-        return await this.repository.find({ where: { cinema: { id: cinemaId }, isActive: true }, relations: { movie: true, hall: true } , order: {createdAt: "DESC"}})
+        return await this.repository.find({ where: { cinema: { id: cinemaId }, isActive: true }, relations: { movie: true, hall: true }, order: { createdAt: "DESC" } })
     }
 
     async getAllByMovieId(movieID: number) {
-        return await this.repository.find({ where: { movie: { id: movieID }, isActive: true  }, relations: { cinema: true, hall: true, movie: true } })
+        return await this.repository.find({ where: { movie: { id: movieID }, isActive: true }, relations: { cinema: true, hall: true, movie: true } })
     }
+
+    async getTopMovies() {
+        const topMovies = await this.repository.createQueryBuilder('show')
+          .select('movie.title', 'movieName')
+          .addSelect('movie.image', 'image')
+          .addSelect('COUNT(*)', 'count')
+          .leftJoin('show.movie', 'movie')
+          .where('show.isActive = :isActive', { isActive: true })
+          .andWhere('EXTRACT(MONTH FROM show.createdAt) = EXTRACT(MONTH FROM CURRENT_DATE)')
+          .andWhere('EXTRACT(YEAR FROM show.createdAt) = EXTRACT(YEAR FROM CURRENT_DATE)')
+          .groupBy('show.movie.id')
+          .addGroupBy('movie.title')
+          .addGroupBy('movie.image')
+          .orderBy('count', 'DESC')
+          .limit(5)
+          .getRawMany();
+      
+        return topMovies;
+      }
+      
+      
 
     async getMovie(hallId: number, movieId: number, date: string, show_time: ShowTime) {
         return await this.repository.findOneBy(

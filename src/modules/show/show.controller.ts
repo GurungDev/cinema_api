@@ -42,6 +42,7 @@ export class ShowController {
                 if (checkSHow) {
                     errorList.push(`Show already exists on this date and at ${item} time.`);
                 }
+                console.log(date)
                 seatList.push({
                     date: date,
                     price: price,

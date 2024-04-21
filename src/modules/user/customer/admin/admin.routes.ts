@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { adminStoreController } from "./admin.controller";
-import authMiddleware, { adminChecker } from "../../../auth/middleware/auth.middleware";
 import { Validator } from "../../../../common/class/validator";
-import { IdDto } from "../../../../common/validation/idValidation";
-import { RequestDataPaths } from "../../../../common/enum/enums";
+ import { IdDto } from "../../../../common/validation/idValidation";
+import authMiddleware, { adminChecker } from "../../../auth/middleware/auth.middleware";
+import { adminStoreController } from "./admin.controller";
+import { RequestDataPaths } from "../../../../common/enum";
 
 const adminCustomerRouter = Router({ mergeParams: true });
 

@@ -8,6 +8,7 @@ import seatRoute from "./modules/seat/seat.routes";
 import ReservationRouter from "./modules/reservation/reservation.routes";
 import paymentRoutes from "./modules/payment/payment.routes";
 import adminRouter from "./modules/admin/admin.routes";
+import userRouter from "./modules/user/customer/customer.routes";
 
 const MainRouter = Router({ mergeParams: true })
 MainRouter.use("/auth", authRouter)
@@ -19,5 +20,7 @@ MainRouter.use("/seat", seatRoute)
 MainRouter.use("/reservation", ReservationRouter)
 MainRouter.use("/payment", paymentRoutes)
 MainRouter.use("/admin", adminRouter)
+MainRouter.use("/user", userRouter)
+
 
 export default MainRouter;

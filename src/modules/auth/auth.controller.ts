@@ -124,8 +124,7 @@ export default class AuthController {
         ChangePasswordDto,
         req.body
       );
-      console.log(changePasswordPayload);
-      await this.otpService.verifyOtp(
+       await this.otpService.verifyOtp(
         changePasswordPayload.purpose,
         changePasswordPayload.otp,
         changePasswordPayload.email

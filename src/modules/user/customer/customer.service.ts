@@ -46,6 +46,18 @@ export class CustomerService {
     await customer.setPassword(newPassword);
     return await customer.save();
   }
+
+  async ChangePasswordBYId(id: number, newPassword: string) {
+    const customer = await this.repository.findOne({where: {id: id} });
+    if (!customer) {
+      throw new Error('Customer not found');
+    }
+    
+    await customer.setPassword(newPassword);
+    return await customer.save();
+  }
+
+
   async deleteUser(userId: number) {
     return await this.repository.softDelete({ id: userId });
   }

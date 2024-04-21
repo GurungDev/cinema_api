@@ -26,8 +26,7 @@ export enum UserServiceEnum {
 export enum OtpPurpose  {
   SIGNUP_CINEMA = "signupCinema",
   FORGOT_PASSWORD_CINEMA =  "forgotPasswordCinema",
-  SIGNUP_CUSTOMER = "signupCustomer",
-  FORGOT_PASSWORD_CUSTOMER =  "forgotPasswordCustomer",
+  SIGNUP_CUSTOMER = "signupCustomer"
 };
 
 

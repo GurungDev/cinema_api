@@ -122,12 +122,6 @@ export class AuthService {
     otpPurpose: OtpPurpose
   ) {
     switch (otpPurpose) {
-      case OtpPurpose.FORGOT_PASSWORD_CUSTOMER:
-        const customer = await this.customerService.changePassword(
-          email,
-          password
-        );
-        return "Sucesssfully Changed Password";
       case OtpPurpose.FORGOT_PASSWORD_CINEMA:
         const store = await this.cinema.changePassword(email, password);
         return "Sucesssfully Changed Password";

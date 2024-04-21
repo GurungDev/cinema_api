@@ -1,4 +1,4 @@
-import { DeepPartial } from "typeorm";
+import { DeepPartial, MoreThan, MoreThanOrEqual } from "typeorm";
 
 import { ReservationRepo, reservationRepo } from "./repo/reservation.repo";
 import ReservationEntity from "./entities/reservation.entity";
@@ -17,7 +17,9 @@ export class ReservationService {
     }
 
     async getAllByUserId(userId: number) {
-        return this.repository.find({ where: { customer: { id: userId } }, relations: { customer: true, seats: { seat: true }, show: { reservations: true, hall: true, movie: true, cinema: true }, payment: true } })
+        const today = new Date()
+        const todayString = today.toISOString();
+        return this.repository.find({ where: { customer: { id: userId }, show: { date: MoreThanOrEqual(todayString) } }, order: { createdAt: "DESC" }, relations: { customer: true, seats: { seat: true }, show: { reservations: true, hall: true, movie: true, cinema: true }, payment: true } })
     }
 
     async getAllByAdmin(userId: number) {

@@ -37,6 +37,6 @@ export default class ShowEntity extends CustomBaseEntity {
     @OneToMany(() => ReservationEntity, (reservation) => reservation.show)
     reservations: ReservationEntity[]
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({default: null})
     deleteAt: Date;
 }

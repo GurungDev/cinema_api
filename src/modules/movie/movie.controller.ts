@@ -101,8 +101,8 @@ export default class MovieController {
     async deleteMovie(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = plainToInstance(IdDto, req.params);
-            const cinemaId = req.userId;
-            const movie = await this.service.delete(id, cinemaId);
+        
+            const movie = await this.service.delete(id);
             return res.status(200).json({
                 success: true,
                 message: "Sucess"

@@ -26,6 +26,6 @@ export default class MovieEntity extends CustomBaseEntity {
     @OneToMany(() => ShowEntity, (show) => show.movie, {onDelete: "CASCADE"})
     shows: ShowEntity[]
 
-    @DeleteDateColumn()
-    deletedDate: Date
+    @DeleteDateColumn({default: null})
+    deletedDate: Date | null;
 }

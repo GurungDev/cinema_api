@@ -31,14 +31,9 @@ export default class MovieService {
         return this.repository.create(movie).save();
     }
 
-    async delete(movieId: number, cinemaId: number) {
+    async delete(movieId: number) {
         // Check if the movie has any associated shows
         const movie = await this.repository.findOne({ where: { id: movieId }, relations: { shows: true } });
-
-        if (!movie || movie.shows.length > 0) {
-            // Movie not found or has associated shows, do not delete
-            throw new ExpressError(400, "Movie cannot be deleted as it has associated shows.");
-        }
 
         return this.repository.softDelete({ id: movieId });
     }

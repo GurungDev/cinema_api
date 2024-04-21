@@ -22,24 +22,25 @@ export class ShowService {
 
     async getTopMovies() {
         const topMovies = await this.repository.createQueryBuilder('show')
-          .select('movie.title', 'movieName')
-          .addSelect('movie.image', 'image')
-          .addSelect('COUNT(*)', 'count')
-          .leftJoin('show.movie', 'movie')
-          .where('show.isActive = :isActive', { isActive: true })
-          .andWhere('EXTRACT(MONTH FROM show.createdAt) = EXTRACT(MONTH FROM CURRENT_DATE)')
-          .andWhere('EXTRACT(YEAR FROM show.createdAt) = EXTRACT(YEAR FROM CURRENT_DATE)')
-          .groupBy('show.movie.id')
-          .addGroupBy('movie.title')
-          .addGroupBy('movie.image')
-          .orderBy('count', 'DESC')
-          .limit(5)
-          .getRawMany();
-      
+            .withDeleted()
+            .select('movie.title', 'movieName')
+            .addSelect('movie.image', 'image')
+            .addSelect('COUNT(*)', 'count')
+            .leftJoin('show.movie', 'movie')
+            .where('show.isActive = :isActive', { isActive: true })
+            .andWhere('EXTRACT(MONTH FROM show.createdAt) = EXTRACT(MONTH FROM CURRENT_DATE)')
+            .andWhere('EXTRACT(YEAR FROM show.createdAt) = EXTRACT(YEAR FROM CURRENT_DATE)')
+            .groupBy('show.movie.id')
+            .addGroupBy('movie.title')
+            .addGroupBy('movie.image')
+            .orderBy('count', 'DESC')
+            .limit(5)
+            .getRawMany();
+
         return topMovies;
-      }
-      
-      
+    }
+
+
 
     async getMovie(hallId: number, movieId: number, date: string, show_time: ShowTime) {
         return await this.repository.findOneBy(

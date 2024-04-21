@@ -16,6 +16,7 @@ movieRouter.post("/", authMiddleware, adminChecker, uploadImage(), Validator.val
 //create movie api
 movieRouter.patch("/:id", authMiddleware, adminChecker, uploadImage(false), Validator.validate(IdDto, RequestDataPaths.Params), Validator.validate(MovieRegisterDto, RequestDataPaths.Body), movieController.updateMovie.bind(movieController));
 
+
 //get movies according to cinema
 movieRouter.get("/cinema-movies",  movieController.getAccordingToCinema.bind(movieController));
 

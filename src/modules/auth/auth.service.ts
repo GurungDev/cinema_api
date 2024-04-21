@@ -58,20 +58,6 @@ export class AuthService {
         this.emailService.mailCustomerRegister(email, otp.otp);
         break;
 
-      case OtpPurpose.FORGOT_PASSWORD_CUSTOMER:
-        const userForForgotPassword = await this.customerService.findByEmail(
-          email
-        );
-        if (!userForForgotPassword) {
-          throw new ExpressError(
-            400,
-            `User with email ${email} doesn't exists. Please signup.`
-          );
-        }
-        await this.otpService.revokeAllSimilarOtp(purpose, email);
-        otp = await this.otpService.buildOtp(email, purpose);
-        this.emailService.mailPasswordChange(email, otp.otp);
-        break;
 
       case OtpPurpose.FORGOT_PASSWORD_CINEMA:
         const storePasswordForgot = await this.cinema.findByEmail(

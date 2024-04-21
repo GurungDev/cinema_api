@@ -17,7 +17,8 @@ export class ReservationService {
     }
 
     async getAllByUserId(userId: number) {
-        const today = new Date()
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set the time to the start of the day
         const todayString = today.toISOString();
         return this.repository.find({ where: { customer: { id: userId }, show: { date: MoreThanOrEqual(todayString) } }, order: { createdAt: "DESC" }, relations: { customer: true, seats: { seat: true }, show: { reservations: true, hall: true, movie: true, cinema: true }, payment: true } })
     }
@@ -33,6 +34,7 @@ export class ReservationService {
             where: { show: { isActive: true } }, relations: { customer: true, seats: { seat: true }, show: { hall: { cinema: true } }, payment: true }
         })
     }
+
     async createOne(reservation: DeepPartial<ReservationEntity>) {
         return this.repository.create(reservation).save();
     }
